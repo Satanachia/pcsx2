@@ -37,6 +37,7 @@ Dialogs::AboutBoxDialog::AboutBoxDialog(wxWindow* parent)
 {
 	const float scale = MSW_GetDPIScale();
 	SetMinWidth(scale * 460);
+	SetMinHeight(200);
 
 	wxImage img = EmbeddedImage<res_Logo>().Get();
 	img.Rescale(img.GetWidth() * scale, img.GetHeight() * scale, wxIMAGE_QUALITY_HIGH);
@@ -44,47 +45,39 @@ Dialogs::AboutBoxDialog::AboutBoxDialog(wxWindow* parent)
 
 	*this += bitmap_logo | StdCenter();
 
+#ifdef _WIN32
+	const int padding = 15;
+#else
+	const int padding = 8;
+#endif
+
+	wxBoxSizer& general(*new wxBoxSizer(wxHORIZONTAL));
+	general += new wxHyperlinkCtrl(this, wxID_ANY,_("Website"), L"https://pcsx2.net");
+	general += padding;
+	general += new wxHyperlinkCtrl(this, wxID_ANY, _("Support Forums"), L"https://forums.pcsx2.net");
+	general += padding;
+	general += new wxHyperlinkCtrl(this, wxID_ANY, _("GitHub Repository"), L"https://github.com/PCSX2/pcsx2");
+	general += padding;
+	general += new wxHyperlinkCtrl(this, wxID_ANY, _("Contributors"), L"https://www.openhub.net/p/Pcsx2/contributors/summary");
+	general += padding;
+	general += new wxHyperlinkCtrl(this, wxID_ANY, _("License"), L"https://github.com/PCSX2/pcsx2/blob/master/pcsx2/Docs/License.txt");
+
+	wxBoxSizer& social(*new wxBoxSizer(wxHORIZONTAL));
+	social += new wxHyperlinkCtrl(this, wxID_ANY, _("Facebook Page"), L"https://www.facebook.com/Pcsx2-145051045565631");
+	social += padding;
+	social += new wxHyperlinkCtrl(this, wxID_ANY, _("Facebook Group"), L"https://www.facebook.com/groups/98483509559");
+	social += padding;
+	social += new wxHyperlinkCtrl(this, wxID_ANY, _("Twitter Page"), L"https://twitter.com/PCSX2");
+	social += padding;
+	social += new wxHyperlinkCtrl(this, wxID_ANY, _("Youtube Channel"), L"https://www.youtube.com/channel/UC-gDRnHdVMrgUndopJgtVSA");
+
 	*this += Text(_("PlayStation 2 Emulator:"));
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Website"), L"https://pcsx2.net"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Support Forums"), L"https://forums.pcsx2.net"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("GitHub Repository"), L"https://github.com/PCSX2/pcsx2"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Contributors"), L"https://www.openhub.net/p/Pcsx2/contributors/summary"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("License"), L"https://github.com/PCSX2/pcsx2/blob/master/pcsx2/Docs/License.txt"
-	) | pxProportion(2).Center().Border(wxALL, 3);
-
+	*this += general | StdCenter();
+	*this += padding;
 	*this += Text(_("Social media links:"));
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Facebook Page"), L"https://www.facebook.com/Pcsx2-145051045565631"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Facebook Group"), L"https://www.facebook.com/groups/98483509559"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Twitter Page"), L"https://twitter.com/PCSX2"
-	) | pxProportion(1).Center().Border(wxALL, 3);
-
-	*this += new wxHyperlinkCtrl(this, wxID_ANY,
-		_("Youtube Channel"), L"https://www.youtube.com/channel/UC-gDRnHdVMrgUndopJgtVSA"
-	) | pxProportion(2).Center().Border(wxALL, 3);
-
-	*this += Text(pxE(L"Big thanks to everyone who contributed to the project throughout the years."));
+	*this += social | StdCenter();
+	*this += padding;
+	*this += Text(_("Big thanks to everyone who contributed to the project throughout the years."));
 
 	wxButton& closeButton = *new wxButton(this, wxID_OK, _("Close"));
 	closeButton.SetFocus();
